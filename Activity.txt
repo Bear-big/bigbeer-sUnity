@@ -1,0 +1,235 @@
+public class MainActivity extends ListActivity {
+	
+	//ListView list;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+       // list=(ListView) findViewById(R.id.ListView1);
+        String[] data={
+        		"(1)绿色",
+        		"(2)魔鬼中的天使",
+        		"(3)易燃易爆杂",
+        		"(4)泡沫",
+        		"(5)生而为人",
+        		"(6)不找了",
+        		"(7)佛说",	
+        	};
+        ListView list=getListView();
+        TextView header=new TextView(this);
+        header.setText("歌曲");
+        header.setTextSize(24);
+        list.addHeaderView(header);
+        TextView foot=new TextView(this);
+        foot.setText("请选择");
+        foot.setTextSize(24);
+        list.addFooterView(foot);
+        setListAdapter(new ArrayAdapter<String>(this, android.R.layout.activity_list_item, data));
+        list.setOnItemClickListener(new mItemClick());
+    }
+
+    class mItemClick implements OnItemClickListener
+    {
+    	
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			// TODO Auto-generated method stub
+			Toast.makeText(getApplicationContext(),"您选择的歌曲是:"+((TextView)arg1).getText(), Toast.LENGTH_SHORT).show();
+		}
+    }
+    
+}
+
+
+
+
+
+
+package com.example.musiclist;
+
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends Activity {
+	
+	ListView list;
+	List<HashMap<String, Object>> ld=new ArrayList<HashMap<String, Object>>();
+	HashMap<String, Object> dt;
+	SimpleAdapter adp;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        list=(ListView) findViewById(R.id.ListView1);
+        for(int i=0;i<=50;i++){
+        	dt=new HashMap<String, Object>();
+        	dt.put("muImage", R.drawable.ic_launcher);
+        	dt.put("musName", "everyday"+i);
+        	dt.put("muAlbum", "jay");
+        	dt.put("singer", "周杰伦");
+        	dt.put("time", "02:30");
+        	ld.add(dt);
+  	
+        }
+        String from[]={"muImage","musName","muAlbum","singer","time"};
+        int to[]={R.id.img,R.id.name,R.id.album,R.id.singer,R.id.time};
+        adp=new SimpleAdapter(this,ld, R.layout.hunagbuju,from,to );
+        list.setAdapter(adp);
+        list.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> listView, View view, int position,
+					long id) {
+				HashMap<String, Object> itemData=ld.get(position);
+				
+				
+			}
+			});
+    }
+
+    class mItemClick implements OnItemClickListener
+    {
+    	
+		@Override
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
+			// TODO Auto-generated method stub
+			Toast.makeText(getApplicationContext(),"您选择的歌曲是:"+((TextView)arg1).getText(), Toast.LENGTH_SHORT).show();
+		}
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+package com.example.musiclist;
+
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.app.Activity;
+import android.database.Cursor;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainActivity extends Activity {
+	
+	ListView list;
+	List<Map<String, Object>> mListData = new ArrayList<Map<String, Object>>();
+	//HashMap<String, Object> dt;
+	SimpleAdapter adp;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        list=(ListView) findViewById(R.id.ListView1);
+        
+        
+        Cursor mAudioCursor = this.getContentResolver().query(
+        		MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+        					null,                 // 字段　没有字段　就是查询所有信息　相当于SQL语句中的　“ * ”
+        					null,                 // 查询条件
+        					null,                 // 条件的对应?的参数
+        	MediaStore.Audio.AudioColumns.TITLE); // 排序方式
+        	// 循环输出歌曲的信息
+        //List<Map<String, Object>> mListData = new ArrayList<Map<String, Object>>();
+        	for (int i = 0; i < mAudioCursor.getCount(); i++) 
+        	{
+        			mAudioCursor.moveToNext();
+        			// 找到歌曲标题和总时间对应的列索引
+        			int indexTitle = mAudioCursor
+        					.getColumnIndex(MediaStore.Audio.AudioColumns.TITLE);      //歌名
+        			int indexARTIST = mAudioCursor
+        					.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST);     //艺术家
+        			int indexALBUM = mAudioCursor
+        					.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM);      //专辑
+        			int duration = mAudioCursor
+        					.getColumnIndex(MediaStore.Audio.AudioColumns.DURATION);   //时长 
+
+        			String strTitle = mAudioCursor.getString(indexTitle);
+        			String strARTIST = mAudioCursor.getString(indexARTIST);
+        			String strALBUM = mAudioCursor.getString(indexALBUM);
+        			String strDURATION = mAudioCursor.getString(duration);
+
+        			HashMap<String, Object> nowMap = new HashMap<String, Object>();
+        			nowMap.put("muImage", R.drawable.ic_launcher);
+        			nowMap.put("musName", strTitle );
+        			nowMap.put("muAlbum", strALBUM );
+        			nowMap.put("singer", strARTIST );
+        			nowMap.put("time", strDURATION );
+        		
+        			mListData.add(nowMap);
+        	}
+//        for(int i=0;i<=50;i++){
+//        	dt=new HashMap<String, Object>();
+//        	dt.put("muImage", R.drawable.ic_launcher);
+//        	dt.put("musName", "everyday"+i);
+//        	dt.put("muAlbum", "jay");
+//        	dt.put("singer", "周杰伦");
+//        	dt.put("time", "02:30");
+//        	ld.add(dt);
+//        }
+        String from[]={"muImage","musName","muAlbum","singer","time"};
+        int to[]={R.id.img,R.id.name,R.id.album,R.id.singer,R.id.time};
+        adp=new SimpleAdapter(this,mListData, R.layout.hunagbuju,from,to );
+        list.setAdapter(adp);
+        
+        list.setOnItemClickListener(new OnItemClickListener()
+        {
+			@Override
+			public void onItemClick(AdapterView<?> listView, View view, int position,long id) 
+			{
+				Map<String, Object> itemData=mListData.get(position);
+				Toast.makeText(MainActivity.this, "开始播放：",3000).show();	
+				}
+		});
+    }
+
+   
+    
+}
